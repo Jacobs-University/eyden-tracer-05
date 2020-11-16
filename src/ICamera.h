@@ -31,8 +31,9 @@ public:
      * @param[out] ray Reference to the @ref Ray structure to be filled
      * @param[in] x The x-coordinate of the pixel lying on the camera screen
      * @param[in] y The y-coordinate of the pixel lying on the camera screen
+     * @param[in] sample The x- and y-shifts to the center of the pixel (used for anti-aliasing).
      */
-    virtual void InitRay(Ray& ray, int x, int y) = 0;
+    virtual void InitRay(Ray& ray, int x, int y, const Vec2f& sample) = 0;
 
     /**
      * @brief Retuns the camera resolution in pixels

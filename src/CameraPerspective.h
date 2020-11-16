@@ -36,10 +36,10 @@ public:
     }
     virtual ~CCameraPerspective(void) = default;
 
-    virtual void InitRay(Ray& ray, int x, int y) override
+    virtual void InitRay(Ray& ray, int x, int y, const Vec2f& sample = Vec2f::all(0.5f)) override
     {
-        float dx = 0.5f;	// x-shift to the center of the pixel
-        float dy = 0.5f;	// y-shift to the center of the pixel
+        float dx = sample[0];	// x-shift to the center of the pixel
+        float dy = sample[1];	// y-shift to the center of the pixel
 
         // Screen space coordinates [-1, 1]
         float sscx = 2 * (x + dx) / getResolution().width - 1;
