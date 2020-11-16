@@ -26,7 +26,7 @@ In this exercise your task is to implement these sampling strategies:
 5. Implement the ```getSample()``` methods in **SamplerRegular.h**, **SamplerRandom.h**, and **SamplerStratified.h** which are derived classes from ```CSampler```.
 Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them to the following images: (regular) (random) (stratified)
 
-<img src="./doc/regular.jpg" alt="regular" width="280px"><img src="./doc/random.jpg" alt="random" width="280px"><img src="./doc/stratified.jpg" alt="stratified" width="280px">
+<img src="./doc/regular.jpg" alt="regular" width="280px"> <img src="./doc/random.jpg" alt="random" width="280px"> <img src="./doc/stratified.jpg" alt="stratified" width="280px">
 
 ## Problem 2
 ### Area Light
