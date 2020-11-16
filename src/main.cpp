@@ -5,77 +5,64 @@
 #include "PrimSphere.h"
 #include "PrimPlane.h"
 #include "PrimTriangle.h"
+#include "Solid.h"
+#include "SolidQuad.h"
+#include "SolidCone.h"
 
 #include "ShaderFlat.h"
 #include "ShaderEyelight.h"
 #include "ShaderPhong.h"
-#include "ShaderPhongBumpMapped.h"
 
-#include "SampleGeneratorRegular.h"
-#include "SampleGeneratorRandom.h"
-#include "SampleGeneratorStratified.h"
+#include "Texture.h"
 
-#include "LightPoint.h"
-#include "LightArea.h"
+#include "LightOmni.h"
 #include "timer.h"
 
 Mat RenderFrame(void)
 {
+	// Camera resolution
+	const Size resolution(1200, 600);
+	
 	// Define a scene
 	CScene scene;
 
-	auto pShaderLight	= std::make_shared<CShaderFlat>(RGB(1, 1, 1));
-	auto pShaderWhite	= std::make_shared<CShaderPhong>(scene, RGB(1, 1, 1), 0.5f, 0.5f, 0, 0);
-	auto pShaderRed		= std::make_shared<CShaderPhong>(scene, RGB(1, 0, 0), 0.5f, 0.5f, 0, 0);
-	
-	// Load scene description
-	scene.ParseOBJ("../../../data/Torus Knot.obj");
+	// Add camera to scene
+	auto pCamera = std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 0, -30.0f), Vec3f(0, 0, 1), Vec3f(0, 1, 0), 30);
 
-	scene.Add(std::make_shared<CPrimTriangle>(Vec3f(0, 0, 50), Vec3f(0, 0, -50), Vec3f(-50, 0, -50), pShaderWhite));
-	scene.Add(std::make_shared<CPrimTriangle>(Vec3f(0, 0, -50), Vec3f(0, 0, 50), Vec3f(50, 0, 50), pShaderRed));
-	scene.Add(std::make_shared<CPrimTriangle>(Vec3f(-10, 10.1f, -10), Vec3f(10, 10.1f, -10), Vec3f(-10, 10.1f, 10), pShaderLight));
-	scene.Add(std::make_shared<CPrimTriangle>(Vec3f(10, 10.1f, 10), Vec3f(-10, 10.1f, 10), Vec3f(10, 10.1f, -10), pShaderLight));
-	
-	scene.Add(std::make_shared<CLightPoint>(Vec3f::all(50), Vec3f(0, 4, 10)));
-	//scene.Add(std::make_shared<CLightArea>(Vec3f::all(6), Vec3f(-10, 10, -10), Vec3f(10, 10, -10), Vec3f(10, 10, 10), Vec3f(-10, 10, 10)));
-	scene.Add(std::make_shared<CLightPoint>(Vec3f::all(50), Vec3f(0, 10, 0)));
-	
-#ifdef ENABLE_BSP
-	// Build BSPTree
-	scene.BuildAccelStructure();
+#ifdef WIN32
+	const std::string dataPath = "../data/";
+#else
+	const std::string dataPath = "../../data/";
 #endif
 
-	Mat img(scene.m_pCamera->getResolution(), CV_32FC3);		// image array
-	Ray ray;                                          			// primary ray
+	// Texture
+	Mat earth = imread(dataPath + "1_earth_8k.jpg");
+	if (earth.empty()) printf("ERROR: Texture file is not found!\n");
+	auto pTexture = std::make_shared<CTexture>(earth);
 
+	// Shaders
+	auto pShader = std::make_shared<CShaderEyelight>(pTexture);
 
-#ifdef ENABLE_SUPERSAMPLING
-//	auto sampleGenerator = std::make_unique<CSampleGeneratorRegular>();
-//	auto sampleGenerator = std::make_unique<CSampleGeneratorRandom>();
-	auto sampleGenerator = std::make_unique<CSampleGeneratorStratified>();
-	int nSamples = 16;
-	float *u = new float[nSamples];
-	float *v = new float[nSamples];
-	float *weight = new float[nSamples];
-	sampleGenerator->getSamples(nSamples, u, v, weight);
-	
-	for (int y = 0; y < img.rows; y++) {
-		for (int x = 0; x < img.cols; x++) {
-			Vec3f color = Vec3f::all(0);
-			for (int s = 0; s < nSamples; s++) {
-				scene.m_pCamera->InitRay(x + u[s], y + v[s], ray); 	// initialize ray
-				color += weight[s] * scene.RayTrace(ray);
-			}
-			img.at<Vec3f>(y, x) = color;
-		}
-	}
-#else
+	// Geometry
+	CSolidCone solid_cone(pShader, Vec3f(10, -4, 0), 4, 8);
+	auto prim_sphere = std::make_shared<CPrimSphere>(pShader, Vec3f(-10, 0, 0), 4);
+
+	// Add everything to the scene
+	scene.add(pCamera);
+	scene.add(solid_cone);
+	scene.add(prim_sphere);
+
+	// Build BSPTree
+	scene.buildAccelStructure(20, 3);
+
+	Mat img(resolution, CV_32FC3);							// image array
+	Ray ray;												// primary ray
+
 	for (int y = 0; y < img.rows; y++)
 		for (int x = 0; x < img.cols; x++) {
-			scene.m_pCamera->InitRay(x, y, ray); // initialize ray
+			scene.getActiveCamera()->InitRay(ray, x, y);	// initialize ray
 			img.at<Vec3f>(y, x) = scene.RayTrace(ray);
 		}
-#endif
 
 	img.convertTo(img, CV_8UC3, 255);
 	return img;
@@ -83,7 +70,9 @@ Mat RenderFrame(void)
 
 int main(int argc, char* argv[])
 {
+	DirectGraphicalModels::Timer::start("Rendering...");
 	Mat img = RenderFrame();
+	DirectGraphicalModels::Timer::stop();
 	imshow("Image", img);
 	waitKey();
 	imwrite("image.jpg", img);

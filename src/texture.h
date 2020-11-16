@@ -1,33 +1,68 @@
+// Texture class based on OpenCV Mat
+// Written by Dr. Sergey G. Kosov in 2019 for Project X
 #pragma once
 
 #include "types.h"
 
-class Texture : public Mat
-{
+// ================================ Texture Class ================================
+/**
+* @brief Texture class
+*/
+class CTexture : public Mat {
 public:
-	Texture(int resX, int resY) : Mat(resY, resX, CV_32FC3) {}
-
-	Texture(const std::string& fileName) : Mat(imread(fileName)) 
+	/**
+	* @brief Default Constructor
+	*/
+	CTexture(void) : Mat() {}
+	/**
+	* @brief Constructor
+	* @param fileName The path to the texture file
+	*/
+	CTexture(const std::string& fileName) : CTexture(imread(fileName)) {}
+	/**
+	* @brief Constructor
+	* @param img The texture image
+	*/
+	CTexture(const Mat& img) : Mat(img)
 	{
-		(*this).convertTo(*this, CV_32FC3, 1.0 / 255);
+		if (!empty()) {
+			if (img.type() != CV_32FC3)
+				(*this).convertTo(*this, CV_32FC3, 1.0 / 255);
+		}
 	}
-  
-	Vec3f GetTexel(float u, float v) const
+	CTexture(const CTexture&) = delete;
+	~CTexture(void) = default;
+	const CTexture& operator=(const CTexture&) = delete;
+		
+	/**
+	* @brief Returns the texture element with coordinates \b (uv)
+	* @param uv The textel coordinates in the texture space, \f$ u,v\in [-1; 1 ] \f$
+	* @return The texture elment (color)
+	*/
+	Vec3f getTexel(const Vec2f& uv) const
 	{
-		// find texel indices
-		int px = static_cast<int>(floor(cols * u));
-		int py = static_cast<int>(floor(rows * v));
+		float t;
+		float u = modff(uv.val[0] + Epsilon, &t);
+		float v = modff(uv.val[1] + Epsilon, &t);
 
-		// texture repeat wrap
-		px = ((px % cols) + cols) % cols;
-		py = ((py % rows) + rows) % rows;
+		if (u < 0) u += 1;
+		if (v < 0) v += 1;
 
-		return (*this).at<Vec3f>(py, px);
-	}
+		if (empty()) {	// Empty texture generates chess pattern
+			bool ax = u < 0.5f ? true : false;
+			bool ay = v > 0.5f ? true : false;
 
-	void GetResolution(float &dx, float &dy) const 
-	{
-		dx = 1.0f / cols;
-		dy = 1.0f / rows;
+			bool c = ax ^ ay;
+			return c ? Vec3f::all(1) : Vec3f::all(0);
+		}
+		else {
+			// find texel indices
+			int x = static_cast<int>(cols * u);
+			int y = static_cast<int>(rows * v);
+
+			return (*this).at<Vec3f>(y, x);
+		}
 	}
 };
+
+using ptr_texture_t = std::shared_ptr<CTexture>;
