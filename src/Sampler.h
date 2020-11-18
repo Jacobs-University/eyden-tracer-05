@@ -25,6 +25,7 @@ public:
 	* @brief Returns the sample \b s from a series
 	* @details This function returns a pair of uniformly distributed random variables \f$(\xi_1, \xi_2)\f$ in square \f$[0; 1)^2\f$. 
 	* Thus, it returs samples uniformly covering a unit square.
+	* @param s The sequence number of the required sample
 	* @return The s-th sample from a series
 	*/
 	virtual Vec2f	getSample(size_t s) const { return Vec2f::all(0.5f); }

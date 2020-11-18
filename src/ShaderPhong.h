@@ -50,6 +50,7 @@ public:
 		// iterate over all light sources
 		for (auto pLight : m_scene.getLights()) {
 			// get direction to light, and intensity
+			// --- PUT YOUR CODE HERE ---
 			std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
 			if (lightIntensity) {
 				// diffuse term

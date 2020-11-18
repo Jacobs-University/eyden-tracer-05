@@ -32,6 +32,13 @@ public:
 		double attenuation = 1 / (ray.t * ray.t);
 		return attenuation * m_intensity;
 	}
+	virtual size_t getNumSamples(void) const override { return 1; }
+
+	/**
+	 * @brief Sets light source position (origin)
+	 * @param org The position (origin) of the light source
+	 */
+	virtual void	setOrigin(const Vec3f& org) { m_org = org; }
 
 
 private:

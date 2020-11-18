@@ -21,6 +21,7 @@
 #include "SamplerStratified.h"
 
 #include "LightOmni.h"
+#include "LightArea.h"
 #include "timer.h"
 
 Mat RenderFrame(void)
@@ -35,8 +36,7 @@ Mat RenderFrame(void)
 	CScene scene(bgColor);
 
 	// Camera
-	auto pCamera = std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 2, -30.0f), normalize(Vec3f(0.8f, -0.5f, 1)), Vec3f(0, 1, 0), 45.0f);
-	scene.add(pCamera);
+	scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 2, -30.0f), normalize(Vec3f(0.8f, -0.5f, 1)), Vec3f(0, 1, 0), 45.0f));
 
 #ifdef WIN32
 	const std::string dataPath = "../data/";
@@ -50,18 +50,31 @@ Mat RenderFrame(void)
 	auto pTextureChessBoard = std::make_shared<CTexture>(cb);
 
 	// Shaders
-	auto pShaderChessBoard = std::make_shared<CShaderFlat>(pTextureChessBoard);
+	auto pShader = std::make_shared<CShaderFlat>(pTextureChessBoard);
 
 	// Geometry
 	const float s = 100;	// size of the chess board
 	const float t = 100;	// texture size of the chess board
-	CSolidQuad chessBoard(pShaderChessBoard, Vec3f(-s, 0, -s), Vec3f(-s, 0, s), Vec3f(s, 0, s), Vec3f(s, 0, -s), Vec2f(0, 0), Vec2f(t, 0), Vec2f(t, t), Vec2f(0, t));
+
+	// --- Problem 2 ---
+	//scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 30.0f, 30.0f), normalize(Vec3f(0, -0.8f, -1)), Vec3f(0, 1, 0), 30.0f));
+	//
+	//auto pAreaLightSampler = std::make_shared<CSamplerRandom>(2);
+	//auto pAreaLight = std::make_shared<CLightArea>(Vec3f::all(200), Vec3f(15, 32, 1), Vec3f(-15, 32, 1), Vec3f(-15, 32, -1), Vec3f(15, 32, -1), pAreaLightSampler);
+	//scene.add(pAreaLight);
+
+	//pShader = std::make_shared<CShaderPhong>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f);
+	//CSolid dragon(pShader, dataPath + "Stanford Dragon.obj");
+	//scene.add(dragon);
+	// --- ------- - ---
+
+	CSolidQuad floor(pShader, Vec3f(-s, 0, -s), Vec3f(-s, 0, s), Vec3f(s, 0, s), Vec3f(s, 0, -s), Vec2f(0, 0), Vec2f(t, 0), Vec2f(t, t), Vec2f(0, t));
 
 	// Add everything to the scene
-	scene.add(chessBoard);
+	scene.add(floor);
 
 	// Build BSPTree
-	scene.buildAccelStructure(20, 3);
+	scene.buildAccelStructure(30, 3);
 
 	// Sampler
 	auto pSampler = std::make_shared<CSampler>(2);

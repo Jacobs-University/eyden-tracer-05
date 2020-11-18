@@ -26,7 +26,12 @@ public:
 	 * @param[in, out] ray The ray from object point to the light source. The direction ray.dir is modified within the function
 	 * @return The intensity of light hitting the point \b ray.org
 	 */
-	virtual std::optional<Vec3f> illuminate(Ray& ray) = 0;
+	virtual std::optional<Vec3f>	illuminate(Ray& ray) = 0;
+	/**
+	 * @brief Returns recommended number of samples for the particular light source implementation
+	 * @return The recommended number of samples
+	 */
+	virtual size_t					getNumSamples(void) const = 0;
 	/**
 	 * @brief Flag indicating if the light source casts shadow or not
 	 * @retval true If the light source casts shadow
