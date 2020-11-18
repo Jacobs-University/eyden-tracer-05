@@ -29,11 +29,12 @@ Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them 
 <img src="./doc/regular.jpg" alt="regular" width="280px"> <img src="./doc/random.jpg" alt="random" width="280px"> <img src="./doc/stratified.jpg" alt="stratified" width="280px">
 
 ## Problem 2
-### Area Light
+### Area Light (Points 30)
 As you have learned in the class, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need amore advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in **LightArea.h**) which is defined by four points in space:
 1. Study the constructor ```CLightArea::CLightArea()```. It takes a pointer to the sampler object, developed in the previouse problem.
 2. Implement method ```std::optional<Vec3f>	CLightArea::illuminate(Ray& ray)``` using the random samples as the locations of the _verual_ point light sources at the surface of the LightArea, normal and the area of the LightArea.
-    **Hint:** You may incorporate a static variable to track the sequence number **_s_** of a sample.
+    **Hint 1:** You may incorporate a static variable to track the sequence number **_s_** of a sample.
+    **Hint 2:** In order to place a virtual point light source you can use method ```void	CLightOmni::setOrigin(const Vec3f& org)```.
 3. Modify your shader method ```Vec3f CShaderPhong::shade(const Ray& ray)``` to integrate the incoming light using the sample points as as described in the lecture.
 4. Uncomment the code for problem 2 in **main.cpp** and render an image with 4 shadow rays and 4 primary rays per pixel. Play with different samplers and submit your best result in the "renders" folder.
 If everything is implemented correct your images should look like this:
