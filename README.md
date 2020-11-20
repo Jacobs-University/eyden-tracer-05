@@ -29,7 +29,7 @@ Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them 
 <img src="./doc/regular.jpg" alt="regular" width="280px"> <img src="./doc/random.jpg" alt="random" width="280px"> <img src="./doc/stratified.jpg" alt="stratified" width="280px">
 
 ## Problem 2
-### Area Light (Points 30)
+### Area Light (Points 20)
 As you have learned in the class, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need amore advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in **LightArea.h**) which is defined by four points in space:
 1. Study the constructor ```CLightArea::CLightArea()```. It takes a pointer to the sampler object, developed in the previouse problem.
 2. Implement method ```std::optional<Vec3f>	CLightArea::illuminate(Ray& ray)``` using the random samples as the locations of the _verual_ point light sources at the surface of the LightArea, normal and the area of the LightArea.
@@ -41,65 +41,9 @@ If everything is implemented correct your images should look like this:
 <img src="./doc/area light.jpg" alt="Area Light" width="800px">
 
 ## Problem 3
-### Stochastic Bump Mapping
+### Stochastic Glossy Reflection (Points 50)
 
-## Problem 4
-### Chrome Shader
-
-
-
-## Problem 5.1 
-### Reflection (Points 20)
-In contrast to the rasterization algorithms, raytracing can simulate physically correct reflections and refractions. In this assignmnet we will extend the Phong shader to handle both reflections and refractions. 
-Proceed as follows:
-1. Fork the current repository.
-2. Modify the README.md file in your fork and put your name (or names if you work in a group) above.
-3. You will find the _torus knot_ model in your data folder.
-4. Turn on BSP-support by enabling the flag `ENABLE_BSP` in types.h file or in cmake-gui.exe application.
-5. Extend ```CShaderPhong::Shade()``` to also support reflections.
-6. Test your implementation with torus knot.obj. 
-If everything is correct your images should look like this:  
-![](./doc/mirror.jpg) 
-
-## Problem 5.2
-### Refraction (Points 30)
-Now we need to extend ```CShaderPhong::Shade()``` to also support refractions.
-Test your implementation with torus knot.obj and refraction coefficient k = 1.5 (glass) or k = 2.4 (diamond)
-If everything is correct your images should look like this:  
-![](./doc/glass.jpg) 
-
-## Problem 5.3
-### Glass Shading (Points 50)
-In order to create the naturally-looking glass matherial, we need to combine reflections and refractions from the previouse problems. Please use the following proportions: 
-- Ambient coefficient: 0
-- Diffuse reflection coefficient: 0.1
-- Specular refelection coefficient: 2
-- Shininess exponent: 80
-- Perfect reflection (mirror) coefficient: 0.2
-- Perfect transmission coefficient: 0.8
-- The refractive index of the medium: 1.5
-
-Test your implementation on torus knot.obj. If everything is correct your image should look like this:
-![](./doc/torus.jpg) 
-
-## Problem 5.4
-### Procedual Bump Mapping (Points 20)
-In the last exercise you have learned that the appearence of a surface can be changed by using a modified _surface normal_. In this exercise we will implement a technique called _bump mapping_ which bumps the surface normal sideways such that a surface has the impression of beeing bumped. This often allows to generate the appearance of highly complex surface with only very few primitives. In order to do this, three parameters have to be known for each surface point:
-1. The original surface normal _N_.
-2. A local coordinate frame for this surface point. Though any coordinate frame can be used (as long as it is consistent), the usual way is to use the surface derivates in _u_ and _v_ direction, called _dPdu_ and _dPdv_.
-3. The amount _delta_u_, _delta_v_ of deviation along these tangent vectors. The deviation is usually either read from a texture, or is computed procedurally. The final normal during shading (also for reflections) is then _N' = Normalized(N + delta_u * dPdu + delta_v * dPdv)_.  
-
-In this exercise, you will implement a very basic version of this:
-- As surface derivatives, use _dPdu = (1, 0, 0)_ and dPdv = _(0, 0, 1)_.
-- For the amount of deviation, use a simple procedural approach, by computing _delta_u = 0.5 * cos(3 * H_x * sin(H_z))_, _delta_v = 0.5 * sin(13 * H_z)_. _H_ denotes the hit point of the ray with the surface.  
-
-For your implementation, proceed as follows:
-- Implement the Shade-method in ShaderPhongBumpMapped.h by first copying the ```Shade()```-method from the basic phong shader and then modifying the normal at the beginning of the ```Shade()``` function, following the guidlines given above.
-If your shader work correct you should get an image like this using the scene description in main.cpp:  
-![bump](./doc/bump_mapping.jpg)
-
-**Tip:** The concept for a local coordinate frame will also be necessary for many other shading concepts, like _e.g._ procedural shading. For the exam, you will probably need such a concept, as the above hardcoded version will not be powerful enough.  
-As getting the correct surface derivates can be somewhat complicated, there is also a simpler (though not as powerful) way of getting an orthonormal surface coordinate frame from the surface normal, which is similar to our way of generating the orthonormal camera coordinate frame from the camera direction. For a detailed discussion about surface derivatives you can also read Matt Pharr’s book _Physically Based Rendering_.
+<img src="./doc/glossy perf.jpg" alt="mirrow" width="280px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="280px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="280px">
 
 ## Submission
 Please submit the assignment by making a pull request.
