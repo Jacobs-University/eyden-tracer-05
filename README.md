@@ -63,7 +63,8 @@ In contrast to the Phong shader, glossy shader takes two additional arguments on
     * If everything is implemented correctly, you should achieve the following results, depending on the ```m_glossiness``` parameter:
    
 From left to right: Perfect glossiness (_glossiness = 1.0f_); Normal glossiness (_glossiness = 0.5f_); Diffuse glossiness (_glossiness = 0.0f_)
-<img src="./doc/glossy perf.jpg" alt="mirrow" width="310px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="310px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="310px">
+
+<img src="./doc/glossy perf.jpg" alt="mirrow" width="275px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="275px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="275px">
 
 ## Submission
 Please submit the assignment by making a pull request.
