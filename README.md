@@ -23,10 +23,10 @@ In this exercise your task is to implement these sampling strategies:
 2. Modify the README.md file in your fork and put your name above.
 3. In the framework you can find an base class ```CSampler``` with the virtual method ```Vec2f getSample(size_t s) const;```, which is supposed to works as follows: _s_ is the sequential number of required sample to be generated. One sample consists of two coordinates (_u_, _v_) that specify a position within a unit square _[0 .. 1) X [0 .. 1)_. Pay extra attention on the difference between member-variable ```size_t m_nSamples``` and returning value of the method ```size_t CSampler::getNumSamples()```.
 4. Check how sampler is incorporated in your main loop in **main.cpp** file. Method ```void ICamera::InitRay(Ray& ray, int x, int y, const Vec2f& sample)``` was modified to take an additional parameter - two dimensional sample. The method ```Vec2f CSampler::getSample(size_t)``` returns ```Vec2f::all(0.5f)``` to provide the original functioanlity of the classical ray tracer.
-5. Implement the ```getSample()``` methods in **SamplerRegular.h**, **SamplerRandom.h**, and **SamplerStratified.h** which are derived classes from ```CSampler```. You can use method ```random::U<float>()``` to generate a uniform random number in range [0; 1).
+5. Implement the ```getSample()``` methods in **SamplerRegular.h**, **SamplerRandom.h**, and **SamplerStratified.h** which are derived classes from ```CSampler```. You can use method ```Random::U<float>()``` from **random.h** file to generate a uniform random number in range [0; 1).
 Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them to the following images: (regular) (random) (stratified)
 
-<img src="./doc/regular.jpg" alt="regular" width="310px"> <img src="./doc/random.jpg" alt="random" width="310px"> <img src="./doc/stratified.jpg" alt="stratified" width="310px">
+<img src="./doc/regular.jpg" alt="regular" width="280px"> <img src="./doc/random.jpg" alt="random" width="280px"> <img src="./doc/stratified.jpg" alt="stratified" width="280px">
 
 ## Problem 2
 ### Area Light (Points 20)
