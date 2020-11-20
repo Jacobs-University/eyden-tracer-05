@@ -46,9 +46,21 @@ Now we will incorporate stochastic raytracing for simulation of glossy surfaces.
 
 To implement the shader follow the steps:
 1. Study a draft of the class ```CShaderGlossy``` in **ShaderGlossy.h** file. It is derived from ```CShaderPhong``` class and ìts implementation is based on the ```CShaderMirror``` class from previous assignments. In the ```CShaderGlossy::shade(const Ray& ray)``` method you will find an implementation which mixes 50% of the Phong shader color and 50% of the reflected light. This implementation imitates a perfectly smooth surface and results in the first image below.
+In contrast to the Phong shader, glossy shader takes two additional arguments on construction: 
+    * ```float glossiness``` which should control the level of glossiness: 1 - Perfect glossiness and 0 - Diffuse glossiness (see images below), and
+    * ``` ptr_sampler_t pSampler```pointer to the sampler object.
 2. Uncomment the code for problem 3 in **main.cpp** and render an image with 4 glossy rays, 4 shadow rays and 4 primary rays per pixel. You should achive an image, corresponding to the perfect reflection below.
     > **Note:** Using 4 glossy rays, 4 shadow rays and 4 primary rays per pixel will result in average in 64 rays per pixel, which may cause long rendering time (10 - 60 seconds). If the rendering time exceeds 60 seconds, you may replace the dragon solid with a sphere primitive (with the same shader) in order to speed up rendering.
-3. fwf 
+3. Modify ```CShaderGlossy::shade(const Ray& ray)``` to use random samples and ```m_glossiness``` parameter. Your goal is to achieve "Normal glossiness" and "Diffuse glossiness" renders from images below. In order to do that proceed as follows:
+    * Perform transformation of the random variables from sampler object which samples a unit sqhare to sample a unit hemisphere
+    * Transform the samples from their coordinate system (_e.g_ in the lecture examples we had z axis looking to the top) to the object's (in our case it is floor object, where y axis looking to the top) coordinate system
+    * Deviate the normal according to the random direction at the hemisphere in a loop
+    * Trace the reflected rays, derived in respect to the deviated normal and then average the results
+    * In order to control the glossiness level, you need to perform a second transformation of the random variables: try to derive such transformation, whch will depend on the ```m_glossiness``` parameter:
+        * if the ```m_glossiness``` parameter is equal to zero - you need to achieve a uniformly sample hemisphere
+        * if the ```m_glossiness``` parameter is equal to one - you need to achieve samples, which more probably lie on top of the hemisphere - thus the normal will have a minor probability to deviate, and all reflected rays will match the perfectly reflected ray.
+            > **Note:** Recal the difference between uniform sampling and cosine-weighted sampling from the lecture. Elaborate on the way to force the sample to conentrate closer to the top of the hemisphere.
+    * If everything is implemented correctly, you should achieve the following results, depending on the ```m_glossiness``` parameter:
    
 From left to right: Perfect glossiness (_glossiness = 1.0f_); Normal glossiness (_glossiness = 0.5f_); Diffuse glossiness (_glossiness = 0.0f_)
 <img src="./doc/glossy perf.jpg" alt="mirrow" width="310px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="310px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="310px">
