@@ -15,7 +15,7 @@ source_group("Source Files\\Cameras" FILES "src/ICamera.h" "src/CameraPerspectiv
 source_group("Source Files\\Lights" FILES "src/ILight.h" "src/LightOmni.h" "src/LightArea.h")
 source_group("Source Files\\Primitives" FILES "src/IPrim.h" "src/PrimSphere.h" "src/PrimPlane.h" "src/PrimTriangle.h")
 source_group("Source Files\\Solids" FILES "src/Solid.h" "src/SolidQuad.h" "src/SolidCone.h")
-source_group("Source Files\\Shaders" FILES "src/IShader.h" "src/ShaderFlat.h" "src/ShaderEyelight.h" "src/ShaderPhong.h")
+source_group("Source Files\\Shaders" FILES "src/IShader.h" "src/ShaderFlat.h" "src/ShaderEyelight.h" "src/ShaderPhong.h" "src/ShaderGlossy.h")
 source_group("Source Files\\Scene" FILES "src/Scene.h")
 source_group("Source Files\\utilities" FILES "src/ray.h" "src/timer.h" "src/random.h" "src/Texture.h")
 source_group("Source Files\\utilities\\BSP Tree" FILES "src/BSPNode.h" "src/BSPTree.h" "src/BoundingBox.h" "src/BoundingBox.cpp")
