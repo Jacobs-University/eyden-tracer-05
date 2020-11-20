@@ -26,7 +26,7 @@ In this exercise your task is to implement these sampling strategies:
 5. Implement the ```getSample()``` methods in **SamplerRegular.h**, **SamplerRandom.h**, and **SamplerStratified.h** which are derived classes from ```CSampler```. You can use method ```random::U<float>()``` to generate a uniform random number in range [0; 1).
 Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them to the following images: (regular) (random) (stratified)
 
-<img src="./doc/regular.jpg" alt="regular" width="280px"> <img src="./doc/random.jpg" alt="random" width="280px"> <img src="./doc/stratified.jpg" alt="stratified" width="280px">
+<img src="./doc/regular.jpg" alt="regular" width="310px"> <img src="./doc/random.jpg" alt="random" width="310px"> <img src="./doc/stratified.jpg" alt="stratified" width="310px">
 
 ## Problem 2
 ### Area Light (Points 20)
@@ -42,8 +42,16 @@ If everything is implemented correct your images should look like this:
 
 ## Problem 3
 ### Stochastic Glossy Reflection (Points 50)
+Now we will incorporate stochastic raytracing for simulation of glossy surfaces. In particular we will develop a new shader: ```CShaderGlossy```  wich will make use of a random samples generator. 
 
-<img src="./doc/glossy perf.jpg" alt="mirrow" width="280px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="280px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="280px">
+To implement the shader follow the steps:
+1. Study a draft of the class ```CShaderGlossy``` in **ShaderGlossy.h** file. It is derived from ```CShaderPhong``` class and ìts implementation is based on the ```CShaderMirror``` class from previous assignments. In the ```CShaderGlossy::shade(const Ray& ray)``` method you will find an implementation which mixes 50% of the Phong shader color and 50% of the reflected light. This implementation imitates a perfectly smooth surface and results in the first image below.
+2. Uncomment the code for problem 3 in **main.cpp** and render an image with 4 glossy rays, 4 shadow rays and 4 primary rays per pixel. You should achive an image, corresponding to the perfect reflection below.
+    > **Note:** Using 4 glossy rays, 4 shadow rays and 4 primary rays per pixel will result in average in 64 rays per pixel, which may cause long rendering time (10 - 60 seconds). If the rendering time exceeds 60 seconds, you may replace the dragon solid with a sphere primitive (with the same shader) in order to speed up rendering.
+3. fwf 
+   
+From left to right: Perfect glossiness (_glossiness = 1.0f_); Normal glossiness (_glossiness = 0.5f_); Diffuse glossiness (_glossiness = 0.0f_)
+<img src="./doc/glossy perf.jpg" alt="mirrow" width="310px"> <img src="./doc/glossy mid.jpg" alt="glossy" width="310px"> <img src="./doc/glossy low.jpg" alt="diffuse" width="310px">
 
 ## Submission
 Please submit the assignment by making a pull request.
