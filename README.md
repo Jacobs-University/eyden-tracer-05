@@ -30,13 +30,14 @@ Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them 
 
 ## Problem 2
 ### Area Light (Points 20)
-As you have learned in the class, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need amore advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in **LightArea.h**) which is defined by four points in space:
+As you have learned in the class, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need a more advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in **LightArea.h**) which is defined by four points in space:
 1. Study the constructor ```CLightArea::CLightArea()```. It takes a pointer to the sampler object, developed in the previouse problem.
-2. Implement method ```std::optional<Vec3f>	CLightArea::illuminate(Ray& ray)``` using the random samples as the locations of the _verual_ point light sources at the surface of the LightArea, normal and the area of the LightArea.
+2. Implement method ```std::optional<Vec3f>	CLightArea::illuminate(Ray& ray)``` using (1) the random samples as the locations of the _virtual_ point light sources at the surface of the LightArea, (2) normal and (3) the area of the light source.
     **Hint 1:** You may incorporate a static variable to track the sequence number **_s_** of a sample.
     **Hint 2:** In order to place a virtual point light source you can use method ```void	CLightOmni::setOrigin(const Vec3f& org)```.
-3. Modify your shader method ```Vec3f CShaderPhong::shade(const Ray& ray)``` to integrate the incoming light using the sample points as as described in the lecture.
-4. Uncomment the code for problem 2 in **main.cpp** and render an image with 4 shadow rays and 4 primary rays per pixel. Play with different samplers and submit your best result in the "renders" folder.
+3. Modify the shader method ```Vec3f CShaderPhong::shade(const Ray& ray)``` to integrate the incoming light using the sample points as described in the lecture.
+4. Uncomment the code for problem 2 in **main.cpp** and render an image with 4 shadow rays and 4 primary rays per pixel. Play with different samplers and submit your best results in the "renders" folder.
+
 If everything is implemented correct your images should look like this:
 <img src="./doc/area light.jpg" alt="Area Light" width="800px">
 
@@ -45,19 +46,19 @@ If everything is implemented correct your images should look like this:
 Now we will incorporate stochastic raytracing for simulation of glossy surfaces. In particular we will develop a new shader: ```CShaderGlossy```  wich will make use of a random samples generator. 
 
 To implement the shader follow the steps:
-1. Study a draft of the class ```CShaderGlossy``` in **ShaderGlossy.h** file. It is derived from ```CShaderPhong``` class and ìts implementation is based on the ```CShaderMirror``` class from previous assignments. In the ```CShaderGlossy::shade(const Ray& ray)``` method you will find an implementation which mixes 50% of the Phong shader color and 50% of the reflected light. This implementation imitates a perfectly smooth surface and results in the first image below.
-In contrast to the Phong shader, glossy shader takes two additional arguments on construction: 
+1. Study a draft of the class ```CShaderGlossy``` in **ShaderGlossy.h**. It is derived from ```CShaderPhong``` class and its implementation is based on the ```CShaderMirror``` class from previous assignments. In the ```CShaderGlossy::shade(const Ray& ray)``` method you will find an implementation which mixes 50% of the Phong shader color and 50% of the reflected light. This implementation imitates a perfectly smooth surface and results in the first image below.
+In contrast to the Phong shader, the glossy shader constructor takes two additional arguments: 
     * ```float glossiness``` which should control the level of glossiness: 1 - Perfect glossiness and 0 - Diffuse glossiness (see images below), and
     * ``` ptr_sampler_t pSampler```pointer to the sampler object.
-2. Uncomment the code for problem 3 in **main.cpp** and render an image with 4 glossy rays, 4 shadow rays and 4 primary rays per pixel. You should achive an image, corresponding to the perfect reflection below.
-    > **Note:** Using 4 glossy rays, 4 shadow rays and 4 primary rays per pixel will result in average in 64 rays per pixel, which may cause long rendering time (10 - 60 seconds). If the rendering time exceeds 60 seconds, you may replace the dragon solid with a sphere primitive (with the same shader) in order to speed up rendering.
-3. Modify ```CShaderGlossy::shade(const Ray& ray)``` to use random samples and ```m_glossiness``` parameter. Your goal is to achieve "Normal glossiness" and "Diffuse glossiness" renders from images below. In order to do that proceed as follows:
+2. Uncomment the code for problem 3 in **main.cpp** and render an image with 4 glossy rays, 4 shadow rays and 4 primary rays per pixel. You should achive an image, corresponding to the perfect reflection depicted below.
+    > **Note:** Using 4 glossy rays, 4 shadow rays and 4 primary rays per pixel will result in approximately 64 rays per pixel, which may cause long rendering time (10 - 60 seconds). If the rendering time exceeds 60 seconds on your machine, you may replace the dragon solid with a sphere primitive (with the same shader) in order to speed up rendering.
+3. Modify ```CShaderGlossy::shade(const Ray& ray)``` to use random samples and ```m_glossiness``` parameter. Your goal is to achieve "Normal glossiness" and "Diffuse glossiness" renders as depicted below. In order to do that proceed as follows:
     * Perform transformation of the random variables from sampler object which samples a unit sqhare to sample a unit hemisphere
-    * Transform the samples from their coordinate system (_e.g_ in the lecture examples we had z axis looking to the top) to the object's (in our case it is floor object, where y axis looking to the top) coordinate system
-    * Deviate the normal according to the random direction at the hemisphere in a loop
-    * Trace the reflected rays, derived in respect to the deviated normal and then average the results
-    * In order to control the glossiness level, you need to perform a second transformation of the random variables: try to derive such transformation, whch will depend on the ```m_glossiness``` parameter:
-        * if the ```m_glossiness``` parameter is equal to zero - you need to achieve a uniformly sample hemisphere
+    * Transform the samples from their coordinate system (_e.g_ in the lecture examples we had z axis looking to the top) to the object's (in our case it is floor object, where y axis looking to the top) coordinate system.
+    * Deviate the normal to look at the random location at the hemisphere.
+    * Trace a number of reflected rays, derived in respect to the deviated normal and then average the results. The number of reflection rays is equal to number of random samples.
+    * In order to control the glossiness level, you need to perform a second transformation of the random variables: try to derive such transformation yourself, whch will depend on the ```m_glossiness``` parameter:
+        * if the ```m_glossiness``` parameter is equal to zero - you need to achieve a uniformly sample hemisphere. Take into account that reflected ray may go undet the surfaces.
         * if the ```m_glossiness``` parameter is equal to one - you need to achieve samples, which more probably lie on top of the hemisphere - thus the normal will have a minor probability to deviate, and all reflected rays will match the perfectly reflected ray.
             > **Note:** Recal the difference between uniform sampling and cosine-weighted sampling from the lecture. Elaborate on the way to force the sample to conentrate closer to the top of the hemisphere.
     * If everything is implemented correctly, you should achieve the following results, depending on the ```m_glossiness``` parameter:
