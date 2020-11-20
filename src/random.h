@@ -12,7 +12,7 @@
 * @details This namespace collects methods for generating random numbers and vectors with uniform and normal distributions
 * @author Sergey G. Kosov, sergey.kosov@project-10.de
 */
-namespace random {
+namespace Random {
 	/**
 	* @brief Returns an integer random number with uniform distribution
 	* @details This function produces random integer values \a i, uniformly distributed on the closed interval [\b min, \b max], that is, distributed according to the discrete probability function:

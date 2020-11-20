@@ -79,7 +79,7 @@ public:
 	}
 
 
-private:
+protected:
 	CScene& m_scene;
 	float 	m_ka;    ///< ambient coefficient
 	float 	m_kd;    ///< diffuse reflection coefficients

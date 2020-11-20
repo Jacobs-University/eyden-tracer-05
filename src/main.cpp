@@ -42,7 +42,7 @@ Mat RenderFrame(void)
 #ifdef WIN32
 	const std::string dataPath = "../data/";
 #else
-	const std::string dataPath = "../../data/";
+	const std::string dataPath = "../../../data/";
 #endif
 
 	// Textures
