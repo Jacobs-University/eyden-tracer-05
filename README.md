@@ -26,7 +26,7 @@ In this exercise your task is to implement these sampling strategies:
 5. Implement the ```getSample()``` methods in **SamplerRegular.h**, **SamplerRandom.h**, and **SamplerStratified.h** which are derived classes from ```CSampler```. You can use method ```Random::U<float>()``` from **random.h** file to generate a uniform random number in range [0; 1).
 Use cb.bmp texture to render your image with 4 samples (2 x 2) and compare them to the following images: (regular) (random) (stratified)
 
-<img src="./doc/regular.jpg" alt="regular" width="270px"> <img src="./doc/random.jpg" alt="random" width="270px"> <img src="./doc/stratified.jpg" alt="stratified" width="270px">
+<img src="./doc/regular.jpg" alt="regular" width="275px"> <img src="./doc/random.jpg" alt="random" width="275px"> <img src="./doc/stratified.jpg" alt="stratified" width="275px">
 
 ## Problem 2
 ### Area Light (Points 20)
