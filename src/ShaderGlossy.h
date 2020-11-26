@@ -33,7 +33,7 @@ public:
 		//disc transformation 
 		Vec3f dev_normal= Vec3f(0, 0, 0);
 		Vec2f disc;
-		Vec3f sample;
+		Vec2f sample;
 		Vec2f s;
 		float theta, r;
 		int S = m_pSampler->getNumSamples();

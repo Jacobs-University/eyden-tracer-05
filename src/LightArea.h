@@ -40,7 +40,6 @@ public:
 	{
 		// --- PUT YOUR CODE HERE ---
 		Vec2f sample(0, 0);
-		m_idx = 0;
 		if (m_idx < getNumSamples() - 1) {
 
 			m_idx++;
@@ -85,4 +84,5 @@ private:
 	double			m_area;		///< Area of the light source
 	Vec3f			m_normal;	///< Normal to the light source surface
 	ptr_sampler_t	m_pSampler;	///< Pointer to the sampler ref @ref CSampler
+	int m_idx = 0;
 };
