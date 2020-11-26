@@ -86,6 +86,9 @@ Mat RenderFrame(void)
 
 	// Sampler
 	auto pPixelSampler = std::make_shared<CSampler>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerRandom>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerRegular>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerStratified>(2);
 
 	Mat img(resolution, CV_32FC3);								// image array
 	size_t nSamples = pPixelSampler->getNumSamples();
