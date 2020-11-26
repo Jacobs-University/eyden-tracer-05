@@ -19,9 +19,17 @@ public:
 	CSamplerRandom(size_t nSamples) : CSampler(nSamples) {}
 	virtual ~CSamplerRandom(void) = default;
 
-	virtual Vec2f	getSample(size_t) const override 
-	{ 
+	virtual Vec2f	getSample(size_t) const override
+	{
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+		/*We implemented this method first because it seemed easiest.
+		In this method the pixel is sampled by n randomly placed samples
+		over the entire screen space so here, we don't have to pay attention
+		to stay in a given pixel or whatever.
+		Coordinates x and y are randomly generated using the suggested
+		method from the assignment from random.h.		*/
+		float x = Random::U<float>();
+		float y = Random::U<float>();
+		return Vec2f(x, y);
 	}
 };

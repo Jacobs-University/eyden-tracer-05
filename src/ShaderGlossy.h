@@ -30,14 +30,46 @@ public:
 		Vec3f normal = ray.hit->getNormal(ray);									// shading normal
 
 		// --- PUT YOUR CODE HERE ---
+		//also mostly from OpenRT
+		Vec2f disc;
+		int S = m_pSampler->getNumSamples();
+		for (int i = 0; i < S; i++) {
 
-		Ray reflected;
-		reflected.org = ray.org + ray.dir * ray.t;
-		reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
+			Vec2f sample = m_pSampler->getSample(i);
 
-		Vec3f reflection = m_scene.RayTrace(reflected);
+			Vec2f s = 2 * sample - Vec2f::all(0);
+			
+			float theta;
+			float r;
+			if (fabs(s[0]) > fabs(s[1])){
+				r = s[0];
+				theta = 0.25f * Pif * s[1] / r;
+			}
+			else{
+				r = s[1];
+				theta = 0.5f * Pif - 0.25f * Pif * s[0] / r;
+			}
 
-		res = 0.5 * res + 0.5 * reflection;
+			float x = r * cosf(theta);
+			float y = r * sinf(theta);
+			x += (-1 * x * m_glossiness); 
+			y += (-1 * y * m_glossiness);
+
+			disc = Vec2f(x, y);
+
+
+			Vec2f ss = disc;
+			float z = sqrtf(max(0.0f, 1.0f - disc[0] * disc[0] - disc[1] * disc[1]));
+
+			normal = Vec3f(normal.val[0] + ss[0], z, normal.val[2] + ss[1]);
+			Ray reflected;
+			reflected.org = ray.org + ray.dir * ray.t;
+			reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
+
+			Vec3f reflection = m_scene.RayTrace(reflected);
+			res = 0.5 * res + 0.5 * reflection;
+		}
+		res = res / S;
 
 		return res;
 	}

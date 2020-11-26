@@ -51,25 +51,29 @@ public:
 		for (auto pLight : m_scene.getLights()) {
 			// get direction to light, and intensity
 			// --- PUT YOUR CODE HERE ---
-			std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
-			if (lightIntensity) {
-				// diffuse term
-				float cosLightNormal = shadow.dir.dot(normal);
-				if (cosLightNormal > 0) {
-					if (m_scene.occluded(shadow))
-						continue;
+			int S = (*pLight).getNumSamples();
+			for (int i = 0; i < S; i++) {
+				std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
+				if (lightIntensity) {
+					// diffuse term
+					float cosLightNormal = shadow.dir.dot(normal);
+					if (cosLightNormal > 0) {
+						if (m_scene.occluded(shadow))
+							continue;
 
-					Vec3f diffuseColor = m_kd * color;
-					res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
-				}
+						Vec3f diffuseColor = m_kd * color;
+						res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
+					}
 
-				// specular term
-				float cosLightReflect = shadow.dir.dot(reflect);
-				if (cosLightReflect > 0) {
-					Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
-					res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					// specular term
+					float cosLightReflect = shadow.dir.dot(reflect);
+					if (cosLightReflect > 0) {
+						Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
+						res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					}
 				}
 			}
+			res = res / S;
 		}
 
 		for (int i = 0; i < 3; i++)
@@ -77,10 +81,11 @@ public:
 
 		return res;
 	}
-
-
-protected:
+//I had to move m_scene into public because the access in Glossy Shader was denied
+public:
 	CScene& m_scene;
+
+private:
 	float 	m_ka;    ///< ambient coefficient
 	float 	m_kd;    ///< diffuse reflection coefficients
 	float 	m_ks;    ///< specular refelection coefficients

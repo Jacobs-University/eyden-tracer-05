@@ -2,7 +2,7 @@
 **Dealine**: 26.11.2020
 
 Please put your name here:  
-**Name:** .......
+**Name:** Katrin von Seggern, Jordan Streete
 ## Problem 1
 ### Supersampling (Points 10 + 10 + 10)
 In this assignment we will concentrate on stochastic ray-tracin and start with developing samplers, which generate random samples covering a unit square area.
