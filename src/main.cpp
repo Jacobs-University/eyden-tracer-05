@@ -40,7 +40,8 @@ Mat RenderFrame(void)
 	scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 2, -30.0f), normalize(Vec3f(0.8f, -0.5f, 1)), Vec3f(0, 1, 0), 45.0f));
 
 #ifdef WIN32
-	const std::string dataPath = "../data/";
+	//const std::string dataPath = "../data/";
+	const std::string dataPath = "C:\\Users\\checi\\source\\repos\\eyden-tracer-05-master\\data";
 #else
 	const std::string dataPath = "../../../data/";
 #endif
