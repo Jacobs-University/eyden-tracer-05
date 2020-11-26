@@ -22,7 +22,22 @@ public:
 	virtual Vec2f	getSample(size_t s) const
 	{
 		// --- PUT YOUR CODE HERE ---
+		//from the tutorial 
 		return Vec2f::all(0.5f);
+
+		int n = getNumSamples();
+		float x = s / sqrt(n);
+		float y = s / sqrt(n);
+
+		float ei = Random::U<float>();
+		float ej = Random::U<float>();
+
+		float m = float(sqrt(n)); 
+
+		float i = (x + ei) / m;
+		float j = (y + ej) / m;
+
+		return Vec2f(i, j);
 	}
 
 };
