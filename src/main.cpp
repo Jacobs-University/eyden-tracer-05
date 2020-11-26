@@ -46,7 +46,8 @@ Mat RenderFrame(void)
 #endif
 
 	// Textures
-	Mat cb = imread(dataPath + "cb.bmp");
+	//Mat cb = imread(dataPath + "cb.bmp");
+	Mat cb = imread("C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/cb.bmp");
 	if (cb.empty()) printf("ERROR: Texture file is not found!\n");
 	auto pTextureChessBoard = std::make_shared<CTexture>(cb);
 
@@ -58,21 +59,22 @@ Mat RenderFrame(void)
 	const float t = 100;	// texture size of the chess board
 
 	// --- Problem 2 ---
-	//scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 30.0f, 30.0f), normalize(Vec3f(0, -0.9f, -1)), Vec3f(0, 1, 0), 30.0f));
+	scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 30.0f, 30.0f), normalize(Vec3f(0, -0.9f, -1)), Vec3f(0, 1, 0), 30.0f));
 	//
-	//auto pAreaLightSampler = std::make_shared<CSamplerRandom>(3);
-	//auto pAreaLight = std::make_shared<CLightArea>(Vec3f::all(400), Vec3f(15, 32, 1), Vec3f(-15, 32, 1), Vec3f(-15, 32, -1), Vec3f(15, 32, -1), pAreaLightSampler);
-	//scene.add(pAreaLight);
+	auto pAreaLightSampler = std::make_shared<CSamplerRandom>(3);
+	auto pAreaLight = std::make_shared<CLightArea>(Vec3f::all(400), Vec3f(15, 32, 1), Vec3f(-15, 32, 1), Vec3f(-15, 32, -1), Vec3f(15, 32, -1), pAreaLightSampler);
+	scene.add(pAreaLight);
 
-	//pShaderFloor = std::make_shared<CShaderPhong>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f);
-	//auto pShaderDragon = std::make_shared<CShaderPhong>(scene, RGB(0.153f, 0.682f, 0.376f), 0.2f, 0.8f, 0.5f, 40.0f);
+	pShaderFloor = std::make_shared<CShaderPhong>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f);
+	auto pShaderDragon = std::make_shared<CShaderPhong>(scene, RGB(0.153f, 0.682f, 0.376f), 0.2f, 0.8f, 0.5f, 40.0f);
 	//CSolid dragon(pShaderDragon, dataPath + "Stanford Dragon.obj");
-	//scene.add(dragon);
+	CSolid dragon(pShaderDragon, "C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/Stanford Dragon.obj");
+	scene.add(dragon);
 	// --- ------- - ---
 
 	// --- Problem 3 ---
-	//auto pGlossinessSampler = std::make_shared<CSamplerRandom>(3);
-	//pShaderFloor = std::make_shared<CShaderGlossy>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f, 0.5f, pGlossinessSampler);
+	auto pGlossinessSampler = std::make_shared<CSamplerRandom>(3);
+	pShaderFloor = std::make_shared<CShaderGlossy>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f, 1.5f, pGlossinessSampler);
 	// --- ------- - ---
 
 	CSolidQuad floor(pShaderFloor, Vec3f(-s, 0, -s), Vec3f(-s, 0, s), Vec3f(s, 0, s), Vec3f(s, 0, -s), Vec2f(0, 0), Vec2f(t, 0), Vec2f(t, t), Vec2f(0, t));
