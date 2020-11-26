@@ -51,7 +51,7 @@ public:
 			m_idx = 0; 
 		}
 
-		Vec3f org = m_org + sample.val[0] + m_edge1 + sample.val[1] * m_edge2;
+		Vec3f org = m_org + sample.val[0] * m_edge1 + sample.val[1] * m_edge2;
 
 		setOrigin(org);
 		auto res = CLightOmni::illuminate(ray);
@@ -64,7 +64,7 @@ public:
 		}
 		else {
 
-			return std::nullptr;
+			return nullptr;
 		}
 
 	}
