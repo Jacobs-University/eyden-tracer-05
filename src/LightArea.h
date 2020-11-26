@@ -40,16 +40,16 @@ public:
 	{
 		// --- PUT YOUR CODE HERE ---
 		Vec2f sample(0, 0);
-		if (CSampler::m_idx < getNumSamples() - 1) {
+		m_idx = 0;
+		if (m_idx < getNumSamples() - 1) {
 
-			CSampler::m_idx++;
-			sample = m_pSampler->getSample(CSampler::m_idx);
+			m_idx++;
+			sample = m_pSampler->getSample(m_idx);
 		}
 		else {
 
-			sample = m_pSampler->getSample(CSampler::m_idx);
-			CSampler::m_idx = 0; 
-
+			sample = m_pSampler->getSample(m_idx);
+			m_idx = 0; 
 		}
 
 		Vec3f org = m_org + sample.val[0] + m_edge1 + sample.val[1] * m_edge2;

@@ -56,7 +56,7 @@ public:
 			// --- PUT YOUR CODE HERE ---
 			numberOfSamples = pLight->getNumSamples();
 			std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
-			for (int i = 0; i < numberOfSamples) {
+			for (int i = 0; i < numberOfSamples; i++) {
 
 
 				if (lightIntensity) {

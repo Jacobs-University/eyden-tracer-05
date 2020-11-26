@@ -31,7 +31,7 @@ public:
 
 		// --- PUT YOUR CODE HERE ---
 		//disc transformation 
-		Vec3f dev_normal(0, 0, 0);
+		Vec3f dev_normal= Vec3f(0, 0, 0);
 		Vec2f disc;
 		Vec3f sample;
 		Vec2f s;
@@ -39,7 +39,7 @@ public:
 		int S = m_pSampler->getNumSamples();
 		for (int i = 0; i < S; i++) {
 
-			sample = m_sampler->getSample(i);
+			sample = m_pSampler->getSample(i);
 
 			s = 2 * sample - Vec2f::all(1);
 
@@ -69,7 +69,7 @@ public:
 			float z = sqrtf(max(0.0f, 1.0f - samples_[0] * samples_[0] - samples_[1] * samples_[1]));
 			// the deviated normal 
 
-			dev_normal = Vec3f(normal.val[0] + samples_[0], z, normal:val[2] + samples_[1]);
+			dev_normal = Vec3f(normal.val[0] + samples_[0], z, normal.val[2] + samples_[1]);
 
 			Ray reflected;
 			reflected.org = ray.org + ray.dir * ray.t;
