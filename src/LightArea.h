@@ -64,7 +64,7 @@ public:
 		}
 		else {
 
-			return nullptr;
+			return Vec3f(0,0,0);
 		}
 
 	}
