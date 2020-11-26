@@ -38,8 +38,17 @@ public:
 
 	virtual std::optional<Vec3f>	illuminate(Ray& ray) override
 	{
-		// --- PUT YOUR CODE HERE ---
-		return std::nullopt;
+	    m_sampleIdx = m_sampleIdx < m_pSampler->getNumSamples() ? m_sampleIdx++ : 0;
+        Vec2f sample = m_pSampler->getSample(m_sampleIdx);
+        Vec3f coords =  m_org + sample[0] * m_edge1 + sample[1] * m_edge2;
+        CLightOmni::setOrigin(coords);
+        auto res = CLightOmni::illuminate(ray);
+        double cos_n = -ray.dir.dot(m_normal) / ray.t;
+        if (res.has_value() && cos_n > 0)
+        {
+            return m_area * cos_n * res.value();
+        }
+        return std::nullopt;
 	}
 	virtual size_t					getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
 
@@ -57,4 +66,5 @@ private:
 	double			m_area;		///< Area of the light source
 	Vec3f			m_normal;	///< Normal to the light source surface
 	ptr_sampler_t	m_pSampler;	///< Pointer to the sampler ref @ref CSampler
+	size_t m_sampleIdx = -1;         ///< Sample Index
 };
