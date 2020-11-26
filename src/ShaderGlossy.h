@@ -3,6 +3,9 @@
 #include "ShaderPhong.h"
 #include "Sampler.h"
 
+
+const int nAreaSamples = 1;
+
 class CShaderGlossy : public CShaderPhong {
 public:
 	/**
@@ -27,19 +30,44 @@ public:
 	virtual Vec3f shade(const Ray& ray) const override {
 		Vec3f res = CShaderPhong::shade(ray);
 
-		Vec3f normal = ray.hit->getNormal(ray);									// shading normal
-
-		// --- PUT YOUR CODE HERE ---
-
+		Vec3f normal = ray.hit->getNormal(ray);	
+		
 		Ray reflected;
 		reflected.org = ray.org + ray.dir * ray.t;
 		reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
 
 		Vec3f reflection = m_scene.RayTrace(reflected);
 
-		res = 0.5 * res + 0.5 * reflection;
+		res = 0.5 * res + 0.5 * reflection;// shading normal
+
+		// --- PUT YOUR CODE HERE ---
+		for (auto pLight : m_scene.getLights()) {
+			for (int s = 0; s < nAreaSamples; s++) {
+				std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
+				if (lightIntensity) {
+					float cosLightNormal = shadow.dir.dot(normal);
+					if (cosLightNormal > 0) {
+						if (m_scene.occluded(shadow))
+							continue;
+
+						Vec3f diffuseColor = m_kd * color;
+						res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
+					}
+
+					// specular term
+					float cosLightReflect = shadow.dir.dot(reflect);
+					if (cosLightReflect > 0) {
+						Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
+						res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					}
+				}
+		}
+		
 
 		return res;
+			
+			if (nAreaSamples > 1)
+			res /= nAreaSamples;
 	}
 
 private:
