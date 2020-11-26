@@ -38,6 +38,7 @@ public:
 		
 private:
 	const size_t	m_nSamples;
+	int  m_idx = 0; 
 };
 using ptr_sampler_t = std::shared_ptr<CSampler>;
 
