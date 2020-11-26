@@ -29,7 +29,7 @@ Mat RenderFrame(void)
 {
 	// Camera resolution
 	const Size resolution(800, 600);
-	
+
 	// Background color
 	const Vec3f bgColor = RGB(0, 0, 0);
 
@@ -88,7 +88,7 @@ Mat RenderFrame(void)
 
 	Mat img(resolution, CV_32FC3);								// image array
 	size_t nSamples = pPixelSampler->getNumSamples();
-	
+
 	img.setTo(0);
 	parallel_for_(Range(0, img.rows), [&](const Range& range) {
 		Ray ray;												// primary ray
@@ -103,7 +103,7 @@ Mat RenderFrame(void)
 				pImg[x] = (1.0f / nSamples) * pImg[x];
 			} // x
 		} // y
-	});
+		});
 	img.convertTo(img, CV_8UC3, 255);
 	return img;
 }
