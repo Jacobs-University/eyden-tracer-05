@@ -14,7 +14,10 @@ public:
 	
 	virtual Vec2f	getSample(size_t s) const 
 	{ 
-		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+		int n = getNumSamples();
+        int i = s / n;
+        int j = s % n;
+        int m = sqrt(n);
+		return Vec2f((i+0.5)/m, (j+0.5)/n);
 	}
 };

@@ -38,8 +38,19 @@ public:
 
 	virtual std::optional<Vec3f>	illuminate(Ray& ray) override
 	{
-		// --- PUT YOUR CODE HERE ---
-		return std::nullopt;
+		float xi1 = Random::U<float>();
+        float xi2 = Random::U<float>();
+        
+        Vec3f pos = m_org + xi1 * m_edge1 + xi2 * m_edge2;
+        ray.dir = pos - ray.org;
+        float dist = norm(ray.dir);
+        float cosN = -ray.dir.dot(m_normal) / dist;
+        if (cosN <= 0.0f) return std::nullopt;
+        Vec3f res = m_area * cosN / (dist * dist)) * getIntensity();
+        ray.dir = normalize(ray.dir);
+        ray.t = dist;
+		
+		return res;
 	}
 	virtual size_t					getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
 
