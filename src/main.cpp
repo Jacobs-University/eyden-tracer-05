@@ -46,8 +46,8 @@ Mat RenderFrame(void)
 #endif
 
 	// Textures
-	//Mat cb = imread(dataPath + "cb.bmp");
-	Mat cb = imread("C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/cb.bmp");
+	Mat cb = imread(dataPath + "cb.bmp");
+	//Mat cb = imread("C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/cb.bmp");
 	if (cb.empty()) printf("ERROR: Texture file is not found!\n");
 	auto pTextureChessBoard = std::make_shared<CTexture>(cb);
 
@@ -67,8 +67,8 @@ Mat RenderFrame(void)
 
 	pShaderFloor = std::make_shared<CShaderPhong>(scene, Vec3f::all(1), 0.1f, 0.9f, 0.0f, 40.0f);
 	auto pShaderDragon = std::make_shared<CShaderPhong>(scene, RGB(0.153f, 0.682f, 0.376f), 0.2f, 0.8f, 0.5f, 40.0f);
-	//CSolid dragon(pShaderDragon, dataPath + "Stanford Dragon.obj");
-	CSolid dragon(pShaderDragon, "C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/Stanford Dragon.obj");
+	CSolid dragon(pShaderDragon, dataPath + "Stanford Dragon.obj");
+	//CSolid dragon(pShaderDragon, "C:/Users/Adnan/Source/Repos/eyden-tracer-05/data/Stanford Dragon.obj");
 	scene.add(dragon);
 	// --- ------- - ---
 
