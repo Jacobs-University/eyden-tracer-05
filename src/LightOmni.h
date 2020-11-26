@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ILight.h"
-#include "Ray.h"
+#include "ray.h"
 
 /**
  * @brief Point light source class
@@ -40,6 +40,7 @@ public:
 	 */
 	virtual void	setOrigin(const Vec3f& org) { m_org = org; }
 
+	virtual Vec3f getIntensity() { return m_intensity; }
 
 private:
 	Vec3f m_intensity;	///< The emission (red, green, blue)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IShader.h"
-#include "Texture.h"
+#include "texture.h"
 
 /**
  * @brief Flat shader class

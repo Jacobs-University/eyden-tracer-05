@@ -4,6 +4,7 @@
 
 #include "types.h"
 #include "random.h"
+#include <stdlib.h>
 
 // ================================ Sampler Class ================================
 /**
