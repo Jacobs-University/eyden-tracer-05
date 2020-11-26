@@ -20,8 +20,7 @@ public:
 	virtual ~CSamplerRandom(void) = default;
 
 	virtual Vec2f	getSample(size_t) const override 
-	{ 
-		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+	{
+		return Vec2f::all(Random::U<float>());
 	}
 };

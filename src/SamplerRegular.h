@@ -13,8 +13,11 @@ public:
 	virtual ~CSamplerRegular(void) = default;
 	
 	virtual Vec2f	getSample(size_t s) const 
-	{ 
-		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+	{
+	    size_t n = sqrt(this->getNumSamples());
+	    // get i, j from row major format
+        float i = (s % getNumSamples()) + 0.5;
+        float j = (s / n + 0.5);
+		return Vec2f(j / n, i / n);
 	}
 };
