@@ -22,6 +22,9 @@ public:
 	virtual Vec2f	getSample(size_t) const override 
 	{ 
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+
+		float n = Random::U<float>(); //random from 0 to 1
+		float m = Random::U<float>(); //random from 0 to 1
+		return Vec2f(n, m);
 	}
 };

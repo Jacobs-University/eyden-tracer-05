@@ -27,19 +27,55 @@ public:
 	virtual Vec3f shade(const Ray& ray) const override {
 		Vec3f res = CShaderPhong::shade(ray);
 
-		Vec3f normal = ray.hit->getNormal(ray);									// shading normal
+		Vec3f Dnormal = ray.hit->getNormal(ray);									// shading normal
 
 		// --- PUT YOUR CODE HERE ---
+		Vec2f d; 
+		int numSamples = m_pSampler->getNumSamples();
 
-		Ray reflected;
-		reflected.org = ray.org + ray.dir * ray.t;
-		reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
+		for (int i = 0; i < numSamples; i++) 
+		{
+			Vec2f sample = m_pSampler->getSample(i);
+			Vec2f sa= 2 * sample - Vec2f::all(0);
+			
+			float theta;
+			float t;
 
-		Vec3f reflection = m_scene.RayTrace(reflected);
+			if (fabs(sa[1]) >= fabs(sa[0]))
+			{
+				t = sa[1];
+				theta = 0.5f * Pif - 0.25f * Pif * sa[0] / t;
+			}
+			else
+			{
+				t = sa[0];
+				theta = 0.25f * Pif * sa[1] / t;
+			}
+			//cordinates
+			float x;
+			float y;
+			x= t*cosf(theta); 
+			y= t*sinf(theta); 
+			//get glossiness
+			x= x+ (-1 * x * m_glossiness);
+			y= y+ (-1 * y * m_glossiness);
 
-		res = 0.5 * res + 0.5 * reflection;
+			d = Vec2f(x, y);
 
-		return res;
+			float z = sqrtf(max(0.0f, 1.0f - d[0] * d[0] - d[1] * d[1]));
+
+			Dnormal = Vec3f(Dnormal.val[0] + d[0], z, Dnormal.val[2] + d[1]);
+
+			Ray reflected;
+			reflected.org = ray.org + ray.dir * ray.t;
+			reflected.dir = normalize(ray.dir - 2 * Dnormal.dot(ray.dir) * Dnormal);
+
+			Vec3f reflection = m_scene.RayTrace(reflected);
+
+			res = 0.5 * res + 0.5 * reflection;
+		}
+
+		return (res / numSamples);
 	}
 
 private:
