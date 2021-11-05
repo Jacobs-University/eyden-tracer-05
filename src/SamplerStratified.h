@@ -22,7 +22,20 @@ public:
 	virtual Vec2f	getSample(size_t s) const
 	{
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f);
+		//get num of samples
+		int samples = getNumSamples();
+		//get square root
+		float sq = float(sqrt(samples));
+		float x = s /sq;
+		float y = s / sq;
+		
+		float i = Random::U<float>();
+		float j = Random::U<float>();
+
+		float n = (x + i) /sq;
+		float m = (y + j) /sq;
+
+		return Vec2f(n, m);	
 	}
 
 };

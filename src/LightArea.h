@@ -39,7 +39,30 @@ public:
 	virtual std::optional<Vec3f>	illuminate(Ray& ray) override
 	{
 		// --- PUT YOUR CODE HERE ---
-		return std::nullopt;
+		size_t samples = m_pSampler->getNumSamples();
+
+		size_t n = 0;
+		Vec2f s;
+		if(n<samples){
+			s= m_pSampler->getSample(n);
+			n++;
+		}
+		else{
+			s= m_pSampler->getSample(n);
+			n=0;
+		}
+
+		Vec3f org = m_org + s.val[0] * m_edge1 + s.val[1] * m_edge2;
+		setOrigin(org);
+
+		auto i = CLightOmni::illuminate(ray);
+		float c = -ray.dir.dot(m_normal) /ray.t;
+
+		if (c > 0)	
+			return m_area * c * i.value();
+		else
+			return std::nullopt;
+
 	}
 	virtual size_t					getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
 
