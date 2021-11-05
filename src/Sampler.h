@@ -4,7 +4,7 @@
 
 #include "types.h"
 #include "random.h"
-
+ 
 // ================================ Sampler Class ================================
 /**
 * @brief Sampler abstract class
@@ -33,11 +33,12 @@ public:
 	* @brief Returns the number of samples in a series 
 	* @return The number of samples in a series 
 	*/
-	size_t			getNumSamples(void) const { return m_nSamples * m_nSamples; }
+	size_t	getNumSamples(void) const { return m_nSamples * m_nSamples; }
 		
 		
 private:
 	const size_t	m_nSamples;
+	int  m_idx = 0; 
 };
 using ptr_sampler_t = std::shared_ptr<CSampler>;
 
