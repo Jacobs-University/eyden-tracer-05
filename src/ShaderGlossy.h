@@ -27,17 +27,55 @@ public:
 	virtual Vec3f shade(const Ray& ray) const override {
 		Vec3f res = CShaderPhong::shade(ray);
 
-		Vec3f normal = ray.hit->getNormal(ray);									// shading normal
+    	Vec3f normal = ray.hit->getNormal(ray);									// shading normal
 
 		// --- PUT YOUR CODE HERE ---
+        int N = m_pSampler -> getNumSamples();
+        Vec2f disc;
+        Vec3f deviatedNormal(0, 0, 0);
+        for(int i = 0; i < N; i++) {
+            Vec2f sample = m_pSampler -> getSample(i);
 
-		Ray reflected;
-		reflected.org = ray.org + ray.dir * ray.t;
-		reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
+            Vec2f s1 = 2 * sample - Vec2f :: all(0);
 
-		Vec3f reflection = m_scene.RayTrace(reflected);
+//            // handling the origin degeneracy
+//            if(s1[0] == 0 && s1[1] == 0) {
+//                disc = Vec2f :: all(0);
+//            }
 
-		res = 0.5 * res + 0.5 * reflection;
+            // applying concentric mapping to point
+            float theta, r;
+            if(fabs(s1[0]) > fabs(s1[1])) {
+                r = s1[0];
+                theta = 0.25f * Pif * s1[1] / r;
+            }
+            else {
+                r = s1[1];
+                theta = 0.5f * Pif - 0.25 * Pif * s1[0] / r;
+            }
+
+            float x = r * cosf(theta);
+            float y = r * sinf(theta);
+
+            x += ((-1) * x * m_glossiness);
+            y += ((-1) * y * m_glossiness);
+
+            disc = Vec2f(x, y);
+            Vec2f s2 = disc;
+
+            float z = sqrtf(max(0.0f, 1.0f - s2[0] * s2[0] - s2[1] * s2[1]));
+
+            deviatedNormal = Vec3f(normal.val[0] + s2[0], z, normal.val[2] + s2[1]);
+
+            Ray reflected;
+            reflected.org = ray.org + ray.dir * ray.t;
+            reflected.dir = normalize(ray.dir - 2 * deviatedNormal.dot(ray.dir) * deviatedNormal);
+
+            Vec3f reflection = m_scene.RayTrace(reflected);
+
+            res += 0.5 * res + 0.5 * reflection;
+        }
+        res /= N;
 
 		return res;
 	}
