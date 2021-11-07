@@ -19,10 +19,24 @@ public:
 	CSamplerStratified(size_t nSamples) : CSampler(nSamples) {}
 	virtual ~CSamplerStratified(void) = default;
 
-	virtual Vec2f	getSample(size_t s) const
+	virtual Vec2f getSample(size_t s) const
 	{
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f);
+	
+		int n = getNumSamples();
+		float x = s / sqrt(n);
+		float y = s / sqrt(n);
+
+		float ei = Random::U<float>();
+		float ej = Random::U<float>();
+
+		float m = float(sqrt(n)); //m is square root of n
+
+		float i = (x + ei) / m; 
+		float j = (y + ej) / m;
+		
+		return Vec2f(i, j);	
+
 	}
 
 };

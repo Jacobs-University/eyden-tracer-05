@@ -47,29 +47,31 @@ public:
 		Ray shadow;
 		shadow.org = ray.org + ray.t * ray.dir;
 
-		// iterate over all light sources
-		for (auto pLight : m_scene.getLights()) {
-			// get direction to light, and intensity
-			// --- PUT YOUR CODE HERE ---
-			std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
-			if (lightIntensity) {
-				// diffuse term
-				float cosLightNormal = shadow.dir.dot(normal);
-				if (cosLightNormal > 0) {
-					if (m_scene.occluded(shadow))
-						continue;
+		for (auto pLight : m_scene.getLights()){
+			int nSamples = pLight->getNumSamples(); //we do it for every sample
+			for (int s = 0; s < nSamples; s++) {	// TODO: make the sampling to depend on the light source type
+				// get direction to light, and intensity
+				std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
+				if (lightIntensity) {
+					// diffuse term
+					float cosLightNormal = shadow.dir.dot(normal);
+					if (cosLightNormal > 0) {
+						if (m_scene.occluded(shadow))
+							continue;
 
-					Vec3f diffuseColor = m_kd * color;
-					res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
-				}
+						Vec3f diffuseColor = m_kd * color;
+						res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
+					}
 
-				// specular term
-				float cosLightReflect = shadow.dir.dot(reflect);
-				if (cosLightReflect > 0) {
-					Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
-					res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					// specular term
+					float cosLightReflect = shadow.dir.dot(reflect);
+					if (cosLightReflect > 0) {
+						Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
+						res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					}
 				}
 			}
+			res /= nSamples; //divide the res by sample
 		}
 
 		for (int i = 0; i < 3; i++)
