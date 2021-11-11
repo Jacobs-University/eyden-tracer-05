@@ -21,8 +21,8 @@ public:
 
 	virtual Vec2f	getSample(size_t s) const
 	{
-		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f);
+		return Vec2f(	(s%m_nSamples + Random::U<float>())/m_nSamples,
+						(s/m_nSamples + Random::U<float>())/m_nSamples); 
 	}
 
 };

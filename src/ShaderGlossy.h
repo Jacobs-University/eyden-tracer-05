@@ -28,14 +28,35 @@ public:
 		Vec3f res = CShaderPhong::shade(ray);
 
 		Vec3f normal = ray.hit->getNormal(ray);									// shading normal
-
-		// --- PUT YOUR CODE HERE ---
-
-		Ray reflected;
-		reflected.org = ray.org + ray.dir * ray.t;
-		reflected.dir = normalize(ray.dir - 2 * normal.dot(ray.dir) * normal);
-
-		Vec3f reflection = m_scene.RayTrace(reflected);
+		
+		float theta = atan2(normal[2], normal[0]);
+		float phi = acos(normal[1]);
+		
+		const size_t sampleCount = m_pSampler->getNumSamples();
+		Vec3f reflection = Vec3f::all(0);
+		for (size_t s = 0; s < sampleCount; s++) {
+			Vec2f sample = m_pSampler->getSample(s);
+			
+			//map ranges to ranges of theta and phi for a hemisphere
+			//range for phi changes based on glossiness
+			sample[0] = MAX(acos(sample[0]) - 0.5*Pif*m_glossiness, 0); //phi
+			sample[1] *= 2*Pif; //theta
+			
+			//orient hemisphere around old normal
+			sample[1] += theta;
+			sample[0] += phi;
+			
+			Vec3f sampleHem = normalize(Vec3f(cosf(sample[1])*sinf(sample[0]),
+									cosf(sample[1]),
+									sinf(sample[1])*sinf(sample[0])));
+			
+			Ray reflected;
+			reflected.org = ray.org + ray.dir * ray.t;
+			reflected.dir = normalize(ray.dir - 2 * sampleHem.dot(ray.dir) * sampleHem);
+			
+			reflection += m_scene.RayTrace(reflected);
+		}
+		reflection *= 1.0f / sampleCount;
 
 		res = 0.5 * res + 0.5 * reflection;
 
