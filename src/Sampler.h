@@ -34,9 +34,24 @@ public:
 	* @return The number of samples in a series 
 	*/
 	size_t			getNumSamples(void) const { return m_nSamples * m_nSamples; }
+	
+	size_t getCurSample(void) {
+		static size_t curSample = 0;
+		
+		//save current value and incrament counter
+		size_t current = curSample;
+		curSample++;
+		
+		//resent counter if out of bounds
+		if (curSample >= getNumSamples()) {
+			curSample = 0;
+		}
+		return current;
+	}
+						
 		
 		
-private:
+protected:
 	const size_t	m_nSamples;
 };
 using ptr_sampler_t = std::shared_ptr<CSampler>;

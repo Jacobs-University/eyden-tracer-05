@@ -38,10 +38,20 @@ public:
 
 	virtual std::optional<Vec3f>	illuminate(Ray& ray) override
 	{
-		// --- PUT YOUR CODE HERE ---
+		//get light using next sample
+		size_t s = m_pSampler->getCurSample();
+		Vec2f sample = m_pSampler->getSample(s);
+		CLightOmni::setOrigin(m_org + sample[0]*m_edge1 + sample[1]*m_edge2);
+		Vec3f light = CLightOmni::illuminate(ray).value();
+		
+		//calc light based on angle and size of source
+		double normCos = -ray.dir.dot(m_normal) / ray.t;
+		if (normCos > 0) {
+			return m_area * normCos * light;
+		}
 		return std::nullopt;
 	}
-	virtual size_t					getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
+	virtual size_t	getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
 
 	/**
 	* @brief Returns the normal of area light surface
