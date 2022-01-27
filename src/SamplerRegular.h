@@ -15,6 +15,7 @@ public:
 	virtual Vec2f	getSample(size_t s) const 
 	{ 
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+		size_t nSamples = static_cast<size_t>(sqrt(getNumSamples()));
+        return Vec2f((static_cast<float>(s / nSamples) + 0.5f) / nSamples, (static_cast<float>(s % nSamples) + 0.5f) / nSamples);
 	}
 };
