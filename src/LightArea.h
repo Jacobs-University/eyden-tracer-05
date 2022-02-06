@@ -52,8 +52,8 @@ public:
 
 private:
 	Vec3f			m_org;		///< The origin of the area light source
-	Vec3f			m_edge1;	///< The vector defyning the first edge of the area
-	Vec3f			m_edge2;	///< The vector defyning the second edge of the area
+	Vec3f			m_edge1;	///< The vector defining the first edge of the area
+	Vec3f			m_edge2;	///< The vector defining the second edge of the area
 	double			m_area;		///< Area of the light source
 	Vec3f			m_normal;	///< Normal to the light source surface
 	ptr_sampler_t	m_pSampler;	///< Pointer to the sampler ref @ref CSampler

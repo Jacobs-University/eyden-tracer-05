@@ -84,7 +84,7 @@ Mat RenderFrame(void)
 	scene.buildAccelStructure(30, 3);
 
 	// Sampler
-	auto pPixelSampler = std::make_shared<CSampler>(2);
+	auto pPixelSampler = std::make_shared<CSamplerStratified>(2);
 
 	Mat img(resolution, CV_32FC3);								// image array
 	size_t nSamples = pPixelSampler->getNumSamples();
@@ -97,6 +97,7 @@ Mat RenderFrame(void)
 			for (int x = 0; x < img.cols; x++) {
 				for (size_t s = 0; s < nSamples; s++) {
 					Vec2f sample = pPixelSampler->getSample(s);
+					//std::cout << sample << std::endl;
 					scene.getActiveCamera()->InitRay(ray, x, y, sample);	// initialize ray
 					pImg[x] += scene.RayTrace(ray);
 				} // s
@@ -115,6 +116,6 @@ int main(int argc, char* argv[])
 	DirectGraphicalModels::Timer::stop();
 	imshow("Image", img);
 	waitKey();
-	imwrite("image.jpg", img);
+	imwrite("imageWithStratified.jpg", img);
 	return 0;
 }
