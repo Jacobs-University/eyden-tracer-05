@@ -38,8 +38,34 @@ public:
 
 	virtual std::optional<Vec3f>	illuminate(Ray& ray) override
 	{
+		static int IndexOfSampler = 0;
+		/*
+		Implement method std::optional<Vec3f> CLightArea::illuminate(Ray & ray) using 
+		(1) the random samples as the locations of the virtual point light sources at the surface of the LightArea, 
+		(2) normal and 
+		(3) the area of the light source.
+		Hint 1: You may incorporate a static variable to track the sequence number s of a sample.
+		Hint 2 : In order to place a virtual point light source you can use method void CLightOmni::setOrigin(const Vec3f & org)
+		*/
 		// --- PUT YOUR CODE HERE ---
-		return std::nullopt;
+		//auto NumOfSampler = m_pSampler->getNumSamples();
+		Vec3f TempOrg = m_org;
+		if (IndexOfSampler <= m_pSampler->getNumSamples()) {
+			auto TempSample = m_pSampler->getSample(IndexOfSampler);
+			TempOrg = m_org + TempSample.val[0] * m_edge1 + TempSample.val[1] * m_edge2;
+		}
+		else {
+			IndexOfSampler = 0;
+			auto TempSample = m_pSampler->getSample(IndexOfSampler);
+			TempOrg = m_org + TempSample.val[0] * m_edge1 + TempSample.val[1] * m_edge2;
+		}
+
+		setOrigin(TempOrg);
+		IndexOfSampler++;
+		double cosN = -ray.dir.dot(m_normal) / ray.t;
+		auto Result = CLightOmni::illuminate(ray).value() * cosN * m_area;
+		return Result;
+		//return std::nullopt;
 	}
 	virtual size_t					getNumSamples(void) const override { return m_pSampler->getNumSamples(); }
 

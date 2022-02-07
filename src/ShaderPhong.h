@@ -51,25 +51,35 @@ public:
 		for (auto pLight : m_scene.getLights()) {
 			// get direction to light, and intensity
 			// --- PUT YOUR CODE HERE ---
-			std::optional<Vec3f> lightIntensity = pLight->illuminate(shadow);
-			if (lightIntensity) {
-				// diffuse term
-				float cosLightNormal = shadow.dir.dot(normal);
-				if (cosLightNormal > 0) {
-					if (m_scene.occluded(shadow))
-						continue;
+			Vec3f TempIntensity = Vec3f::all(0);
+			size_t NumOfSamples = pLight->getNumSamples();
+			std::optional<Vec3f> lightIntensity = Vec3f::all(0);
 
-					Vec3f diffuseColor = m_kd * color;
-					res += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
-				}
+			for (size_t i = 0; i < NumOfSamples; i++) {
+				lightIntensity = pLight->illuminate(shadow);
+				if (lightIntensity) {
+					// diffuse term
+					float cosLightNormal = shadow.dir.dot(normal);
+					if (cosLightNormal > 0) {
+						if (m_scene.occluded(shadow))
+							continue;
 
-				// specular term
-				float cosLightReflect = shadow.dir.dot(reflect);
-				if (cosLightReflect > 0) {
-					Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
-					res += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+						Vec3f diffuseColor = m_kd * color;
+						TempIntensity += (diffuseColor * cosLightNormal).mul(lightIntensity.value());
+					}
+
+					// specular term
+					float cosLightReflect = shadow.dir.dot(reflect);
+					if (cosLightReflect > 0) {
+						Vec3f specularColor = m_ks * RGB(1, 1, 1); // white highlight;
+						TempIntensity += (specularColor * powf(cosLightReflect, m_ke)).mul(lightIntensity.value());
+					}
 				}
 			}
+			double TempDivider = 1.0f / NumOfSamples;
+			res += TempDivider * TempIntensity;
+
+			
 		}
 
 		for (int i = 0; i < 3; i++)
