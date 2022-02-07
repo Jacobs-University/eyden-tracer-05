@@ -11,6 +11,7 @@
 * @author Sergey G. Kosov, sergey.kosov@project-10.de
 */
 class CSamplerRandom : public CSampler {
+
 public:
 	/**
 	* @brief Constructor
@@ -22,6 +23,12 @@ public:
 	virtual Vec2f	getSample(size_t) const override 
 	{ 
 		// --- PUT YOUR CODE HERE ---
-		return Vec2f::all(0.5f); 
+		//for(int i = 0; i < )
+		float u = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		Vec2f Sample = Vec2f(u, v);
+		//std::cout << Sample << std::endl;
+		return Sample;
+		//return Vec2f::all(1.f); 
 	}
 };
