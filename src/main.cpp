@@ -40,7 +40,8 @@ Mat RenderFrame(void)
 	scene.add(std::make_shared<CCameraPerspective>(resolution, Vec3f(0, 2, -30.0f), normalize(Vec3f(0.8f, -0.5f, 1)), Vec3f(0, 1, 0), 45.0f));
 
 #ifdef WIN32
-	const std::string dataPath = "../data/";
+	//const std::string dataPath = "../data/";
+	const std::string dataPath = "C:\\Users\\checi\\source\\repos\\eyden-tracer-05-master\\data";
 #else
 	const std::string dataPath = "../../../data/";
 #endif
@@ -85,6 +86,9 @@ Mat RenderFrame(void)
 
 	// Sampler
 	auto pPixelSampler = std::make_shared<CSampler>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerRandom>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerRegular>(2);
+	//auto  pPixelSampler = std::make_shared<CSamplerStratified>(2);
 
 	Mat img(resolution, CV_32FC3);								// image array
 	size_t nSamples = pPixelSampler->getNumSamples();
